@@ -3,7 +3,7 @@
 
   function ComparatorPanel (element, options) {
 
-    element = element || "comparator";
+    element = element || "#comparator";
     options = options || {};
 
     _.defaults(options, {
@@ -13,9 +13,15 @@
     });
 
     this.options = options;
+
+    this.vis = d3.select(element).append("svg:svg")
+      .attr("width", this.options.width)
+      .attr("height", this.options.height);
+
   }
 
   ComparatorPanel.prototype.render = function (data) {
+
     this.nodes = this.vis.selectAll("circle.node")
       .data(data)
       .enter().append("svg:circle")
@@ -28,5 +34,7 @@
       .style("stroke-width", 1.5)
       .call(this.force.drag)
   }
+
+  this.ComparatorPanel = ComparatorPanel;
 
 }.call(app)

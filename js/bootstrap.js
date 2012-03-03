@@ -10,6 +10,7 @@
     });
 
     var panel = new app.BubblePanel();
+    var comparatorPanel = new app.ComparatorPanel();
 
     panel.render(records);
   }

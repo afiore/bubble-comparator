@@ -7,7 +7,7 @@
     options = options || {};
 
     _.defaults(options, {
-      width: 960,
+      width: 500,
       height: 500,
       bubbleClass: 'bubble'
     });
