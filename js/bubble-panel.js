@@ -3,7 +3,7 @@
   var fill = d3.scale.category10();
 
   function BubblePanel (element, options) {
-    element = element || "bubbles";
+    element = element || "#bubbles";
     options = options || {};
 
     _.defaults(options, {
@@ -14,7 +14,7 @@
 
     this.options = options;
 
-    this.vis = d3.select("body").append("svg:svg")
+    this.vis = d3.select(element).append("svg:svg")
       .attr("width", this.options.width)
       .attr("height", this.options.height);
 
@@ -25,16 +25,14 @@
   BubblePanel.prototype.render = function (data) {
 
     var self = this,
-        values = data.map(function (d) { return d.value }),
-        //valueExtent = d3.extent(data, function (d) { return d.value }),
+        valueExtent = d3.extent(data, function (d) { return d.value }),
         w = this.options.width,
         h = this.options.height,
-        r = d3.scale.linear().domain(values).rangeRound([3,20]);
+        r = d3.scale.linear().domain(valueExtent).rangeRound([3,20]);
 
     this.scales = {
       radius: r
     };
-
 
     this.force = d3.layout.force()
         .nodes(data)

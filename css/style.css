@@ -1,0 +1,26 @@
+#wrapper {
+  width: 2000px;
+  height: 1200px;
+  border: 1px solid #000;
+}
+
+#bubbles {
+  width: 1000px;
+  height: 500px;
+  border: 1px solid red;
+}
+
+#comparator {
+  width: 400px;
+  height: 500px;
+  border: 1px solid red;
+}
+
+.panel {
+  float: left;
+
+  position: relative;
+}
+
+
+
