@@ -16,6 +16,6 @@
 
 
 
-  document.addEventListener("DOMContentLoaded", bootstrap)
+  document.addEventListener("DOMContentLoaded", bootstrap, false);
 
 }.call(window.app);
