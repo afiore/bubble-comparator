@@ -1,0 +1,5 @@
+*.swp
+*.gem
+web/public
+web/data/*.json
+Gemfile.lock
