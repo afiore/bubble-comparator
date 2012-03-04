@@ -16,8 +16,6 @@
       .attr("height", this.options.height)
       .append("g")
         .attr("transform", 'translate(-' + (this.options.width/3) + ')');
-
-    this.nodes = null;
   }
 
   /**
@@ -73,16 +71,17 @@
         .start();
 
     this.force.on("tick", function(e) {
-      if (!self.nodes) return;
+      if (!self.data.length) return;
 
-      var k = 6 * e.alpha;
+      var k = 6 * e.alpha,
+          nodes = self.vis.selectAll("circle");
 
-      self.nodes.forEach(function(o, i) {
+      nodes.forEach(function(o, i) {
         o.y += i & 1 ? k : -k;
         o.x += i & 2 ? k : -k;
       });
 
-      self.nodes
+      nodes
         .attr("cx", function(d) { return d.x; })
         .attr("cy", function(d) { return d.y; });
     });
@@ -90,15 +89,15 @@
     return this;
   }
 
-
   BubblePanel.prototype.refresh = function () {
+
+
     var self = this,
         w = this.options.width,
-        h = this.options.height;
+        h = this.options.height,
+        nodes = this.vis.selectAll('circle').data(this.data, function (d) { return d.name; });
 
-    this.nodes = this.vis.selectAll("circle.node")
-        .data(this.data)
-        .enter().append("svg:circle")
+    nodes.enter().append("svg:circle")
         .attr("class", "node")
         .attr("cx", function (d) { return d.x; })
         .attr("cy", function (d) { return d.y; })
@@ -112,6 +111,13 @@
         .style("stroke-width", 1.5)
         .call(this.force.drag);
 
+    nodes.exit()
+      .transition()
+      .duration(500)
+      .attr('r', 0)
+      .remove();
+
+    this.force.start();
     return this;
   }
 
@@ -122,20 +128,38 @@
     this.data = data;
     this._updateSetters();
     if (!this.force) this._setForce(); 
+
     this.refresh();
 
-    this.nodes.on("click", function (d) {
-      self.force.stop()
-      var selected = self.nodes.filter(function (dd) { 
-        return dd === d; 
 
-      }).transition().
-        duration(500).
-        attr("cx", function (d) {
-          return self.options.width;
-        });
+    this.vis.selectAll('circle').on("click", function (d) {
+      console.info(d.name);
+      self.removeNode(d.name);
+      console.info("data.length: %s", self.data.length);
+      self.refresh();
     });
 
+  }
+
+  BubblePanel.prototype.removeNode = function (nodeName, refresh) {
+    refresh = !!refresh || false;
+
+    this.data = _.reject(this.data, function (d) { return d.name === nodeName; });
+    if (refresh) this.refresh();
+    return this;
+  }
+
+  BubblePanel.prototype.addNode = function (node, refresh) {
+    refresh = !!refresh || false;
+
+    // set node initial position if not specified
+    if ('x' in node === false) node.cx = 0;
+    if ('y' in node === false) node.cy = 0;
+
+
+    this.data.push(node);
+    if (refresh) this.refresh();
+    return this;
   }
 
 
