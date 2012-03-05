@@ -1,5 +1,6 @@
 !function () {
   function BubblePanel (element, options) {
+
     element = element || "#bubbles";
     options = options || {};
 
@@ -9,7 +10,11 @@
       bubbleClass: 'bubble'
     });
 
-    this.options = options;
+    this.events = {
+      "circle click": "onClick"
+    };
+
+    app.Delegator.call(this, element, options);
 
     this.vis = d3.select(element).append("svg:svg")
       .attr("width", this.options.width)
@@ -17,6 +22,8 @@
       .append("g")
         .attr("transform", 'translate(-' + (this.options.width/3) + ')');
   }
+
+  var methods = {};
 
   /**
    *
@@ -27,7 +34,7 @@
    *
    */
 
-  BubblePanel.prototype._updateSetters = function () {
+  methods._updateSetters = function () {
     var self = this,
         valueExtent = d3.extent(this.data, function (d) { return d.value });
 
@@ -60,7 +67,7 @@
    */
 
 
-  BubblePanel.prototype._setForce = function () {
+  methods._setForce = function () {
     var self = this;
 
     this.force = d3.layout.force()
@@ -89,9 +96,7 @@
     return this;
   }
 
-  BubblePanel.prototype.refresh = function () {
-
-
+  methods.refresh = function () {
     var self = this,
         w = this.options.width,
         h = this.options.height,
@@ -122,7 +127,7 @@
   }
 
 
-  BubblePanel.prototype.render = function (data) {
+  methods.render = function (data) {
     var self = this;
 
     this.data = data;
@@ -130,18 +135,9 @@
     if (!this.force) this._setForce(); 
 
     this.refresh();
-
-
-    this.vis.selectAll('circle').on("click", function (d) {
-      console.info(d.name);
-      self.removeNode(d.name);
-      console.info("data.length: %s", self.data.length);
-      self.refresh();
-    });
-
   }
 
-  BubblePanel.prototype.removeNode = function (nodeName, refresh) {
+  methods.removeNode = function (nodeName, refresh) {
     refresh = !!refresh || false;
 
     this.data = _.reject(this.data, function (d) { return d.name === nodeName; });
@@ -149,7 +145,7 @@
     return this;
   }
 
-  BubblePanel.prototype.addNode = function (node, refresh) {
+  methods.addNode = function (node, refresh) {
     refresh = !!refresh || false;
 
     // set node initial position if not specified
@@ -163,7 +159,16 @@
   }
 
 
-  //export BubblePanel into the app namespace
+  methods.onClick = function (event, d) {
+    event.preventDefault();
+    this.removeNode(d.name, true);
+  }
+
+
+  // inherits from Delegator and add methods to the BubblePanel prototype
+  _.extend(BubblePanel.prototype, app.Delegator.prototype, methods);
+
+  // export BubblePanel into the app namespace
   this.BubblePanel = BubblePanel;
 
 }.call(app)
