@@ -37,8 +37,9 @@
         cy = function (d, i) {
           return i * step;
         },
-        nodes = this.vis.selectAll("circle.node").data(this.data, function (d) { return d.value; })
-        
+        nodes = this.vis.selectAll("circle.node").data(this.data, function (d) { return d.value; }),
+        lastY = 0;
+
     nodes.order(data);
 
     nodes.enter().append('svg:circle')
@@ -52,12 +53,8 @@
     nodes.exit().remove();
 
     nodes.transition().duration(500).attr('cy', function (d, i) {
-      var y = i * step;
-      console.info("y_%s:%s",i, y);
-      return startY + y + marginY;
+      return lastY += (d.r * 2) + marginY;
     });
-    console.info("---done--");
-
 
   }
   _.extend(ComparatorPanel.prototype, this.Delegator.prototype, methods);
