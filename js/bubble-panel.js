@@ -14,7 +14,10 @@
       "circle click": "onClick"
     };
 
+    app.DataDriven.call(this);
     app.Delegator.call(this, element, options);
+
+    this.comparator = this.options.comparator;
 
     this.vis = d3.select(element).append("svg:svg")
       .attr("width", this.options.width)
@@ -107,10 +110,12 @@
         .attr("cx", function (d) { return d.x; })
         .attr("cy", function (d) { return d.y; })
         .attr("r",  function (d) { 
-          return self.setters.radius(d.value); 
+          d.r = self.setters.radius(d.value); 
+          return d.r;
         })
         .style("fill", function (d) {
-          return self.setters.fill(d.value);
+          d.fill = self.setters.fill(d.value);
+          return d.fill;
         })
         .style("stroke", function(d, i) { return d3.rgb(self.setters.fill(i & 3)).darker(2); })
         .style("stroke-width", 1.5)
@@ -137,36 +142,39 @@
     this.refresh();
   }
 
-  methods.removeNode = function (nodeName, refresh) {
-    refresh = !!refresh || false;
+  //methods.removeNode = function (nodeName, refresh) {
+  //  refresh = !!refresh || false;
 
-    this.data = _.reject(this.data, function (d) { return d.name === nodeName; });
-    if (refresh) this.refresh();
-    return this;
-  }
+  //  this.data = _.reject(this.data, function (d) { return d.name === nodeName; });
+  //  if (refresh) this.refresh();
+  //  return this;
+  //}
 
-  methods.addNode = function (node, refresh) {
-    refresh = !!refresh || false;
+  //methods.addNode = function (node, refresh) {
+  //  refresh = !!refresh || false;
 
-    // set node initial position if not specified
-    if ('x' in node === false) node.cx = 0;
-    if ('y' in node === false) node.cy = 0;
+  //  // set node initial position if not specified
+  //  if ('x' in node === false) node.cx = 0;
+  //  if ('y' in node === false) node.cy = 0;
 
 
-    this.data.push(node);
-    if (refresh) this.refresh();
-    return this;
-  }
+  //  this.data.push(node);
+  //  if (refresh) this.refresh();
+  //  return this;
+  //}
 
 
   methods.onClick = function (event, d) {
     event.preventDefault();
-    this.removeNode(d.name, true);
+    this.remove(d);
+    this.comparator.add(d);
   }
 
 
-  // inherits from Delegator and add methods to the BubblePanel prototype
-  _.extend(BubblePanel.prototype, app.Delegator.prototype, methods);
+  // inherits from Delegator and DataDriven, and add methods to the BubblePanel prototype
+  _.extend(BubblePanel.prototype, this.DataDriven.prototype);
+  _.extend(BubblePanel.prototype, this.Delegator.prototype, methods);
+
 
   // export BubblePanel into the app namespace
   this.BubblePanel = BubblePanel;

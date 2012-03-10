@@ -1,49 +1,68 @@
 !function () {
   'use strict';
 
+  var methods = {};
+
   function ComparatorPanel (element, options) {
 
     element = element || "#comparator";
     options = options || {};
 
     _.defaults(options, {
-      width: 1000,
+      width: 500,
       height: 500,
+      startY: 20,
       bubbleClass: 'bubble'
     });
 
-    this.options = options;
-    this.data = [];
+    this.events = {};
+
+    app.Delegator.call(this, element, options);
+    app.DataDriven.call(this);
 
     this.vis = d3.select(element).append("svg:svg")
       .attr("width", this.options.width)
       .attr("height", this.options.height);
-
   }
 
 
-  ComparatorPanel.prototype.refresh = function (datum) {
-    this.data.push(datum);
-    this._render();
-  }
+  methods.refresh = function () {
+    var self = this,
+        step = 25,
+        startY = 50,
+        marginY = 10,
+        data = this.data.sort(function (a, b) {
+          return d3.descending(a.value, b && b.value);
+        }),
+        cy = function (d, i) {
+          return i * step;
+        },
+        nodes = this.vis.selectAll("circle.node").data(this.data, function (d) { return d.value; })
+        
+    nodes.order(data);
 
-  ComparatorPanel.prototype._render = function () {
-    var y = function (d) {
-      d
-    }
-
-    this.nodes = this.vis.selectAll("circle.node")
-      .data(this.data)
-      .enter().append("svg:circle")
+    nodes.enter().append('svg:circle')
       .attr("class", "node")
       .attr("cx", function(d) { return 100; })
-      .attr("cy", function (d, i) { return y(i); })
       .attr("r", function (d) { return d.r; })
       .style("fill", function(d, i) { return d.fill })
       .style("stroke", function(d, i) { return '#000'; })
-      .style("stroke-width", 1.5)
+      .style("stroke-width", 1.5);
+
+    nodes.exit().remove();
+
+    nodes.transition().duration(500).attr('cy', function (d, i) {
+      var y = i * step;
+      console.info("y_%s:%s",i, y);
+      return startY + y + marginY;
+    });
+    console.info("---done--");
+
+
   }
+  _.extend(ComparatorPanel.prototype, this.Delegator.prototype, methods);
+  _.extend(ComparatorPanel.prototype, this.DataDriven.prototype)
 
   this.ComparatorPanel = ComparatorPanel;
 
-}.call(app)
+}.call(app);

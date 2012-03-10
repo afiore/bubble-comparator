@@ -9,7 +9,8 @@
       };
     });
 
-    var panel = new app.BubblePanel("#bubbles");
+    var comparator = new app.ComparatorPanel(),
+        panel = new app.BubblePanel("#bubbles", {comparator: comparator});
 
     panel.render(records);
     window.panel = panel;
