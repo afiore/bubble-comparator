@@ -8,19 +8,19 @@
     element = element || "#comparator";
     options = options || {};
 
-    _.defaults(options, {
-      width: 500,
+    options = BubbleComparator.extend({
+      width: 250,
       height: 500,
       startY: 20,
       bubbleClass: 'bubble'
-    });
+    }, options);
 
     this.events = {
       'circle click': 'onClick'
     };
 
-    app.Delegator.call(this, element, options);
-    app.DataDriven.call(this);
+    BubbleComparator.Delegator.call(this, element, options);
+    BubbleComparator.DataDriven.call(this);
 
     this.vis = d3.select(element).append("svg:svg")
       .attr("width", this.options.width)
@@ -71,7 +71,7 @@
 
         // reset the value of x when it becomes 
         // greater than the viewport width
-        if (cx + d.r >= maxY ) {
+        if (cx + d.r >= maxX ) {
           cx = lastX = step;
           lastY += d3.max(data, function (d) { return d.r * 2; }) + marginY;
         }
@@ -82,9 +82,9 @@
       })
 
   }
-  _.extend(ComparatorPanel.prototype, this.Delegator.prototype, methods);
-  _.extend(ComparatorPanel.prototype, this.DataDriven.prototype)
+  this.extend(ComparatorPanel.prototype, this.Delegator.prototype, methods);
+  this.extend(ComparatorPanel.prototype, this.DataDriven.prototype)
 
   this.ComparatorPanel = ComparatorPanel;
 
-}.call(app);
+}.call(BubbleComparator);

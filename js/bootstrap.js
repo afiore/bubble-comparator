@@ -9,8 +9,8 @@
       };
     });
 
-    var panel = new app.BubblePanel("#bubbles"),
-        comparator = new app.ComparatorPanel();
+    var panel = new BubbleComparator.BubblePanel("#bubbles"),
+        comparator = new BubbleComparator.ComparatorPanel();
 
     panel.on('data:remove', comparator.add.bind(comparator));
     comparator.on('data:remove', panel.add.bind(panel));
@@ -22,4 +22,4 @@
 
   document.addEventListener("DOMContentLoaded", bootstrap, false);
 
-}.call(window.app);
+}.call(BubbleComparator);

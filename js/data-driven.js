@@ -16,7 +16,7 @@
     var attribute = this._identityAttribute;
 
     return function (a) {
-      return a[attribute] === b[attribute];
+      return a[attribute] !== b[attribute];
     }
   };
 
@@ -31,7 +31,7 @@
 
   DataDriven.prototype.remove = function (d, refresh) {
     withRefresh.call(this, function () {
-      this.data = _.reject(this.data, this._identity(d));
+      this.data = this.data.filter(this._identity(d));
     }, refresh);
     this.emit('data:remove', d);
   }
@@ -44,7 +44,7 @@
     }
   }
 
-  _.extend(DataDriven.prototype, EventEmitter2.prototype);
+  this.extend(DataDriven.prototype, EventEmitter2.prototype);
 
   this.DataDriven = DataDriven;
-}.call(app);
+}.call(BubbleComparator);

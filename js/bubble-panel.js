@@ -4,18 +4,18 @@
     element = element || "#bubbles";
     options = options || {};
 
-    _.defaults(options, {
+    options = BubbleComparator.extend({
       width: 500,
       height: 500,
       bubbleClass: 'bubble'
-    });
+    }, options);
 
     this.events = {
       "circle click": "onClick"
     };
 
-    app.DataDriven.call(this);
-    app.Delegator.call(this, element, options);
+    BubbleComparator.DataDriven.call(this);
+    BubbleComparator.Delegator.call(this, element, options);
 
     this.vis = d3.select(element).append("svg:svg")
       .attr("width", this.options.width)
@@ -147,11 +147,11 @@
 
 
   // inherits from Delegator and DataDriven, and add methods to the BubblePanel prototype
-  _.extend(BubblePanel.prototype, this.DataDriven.prototype);
-  _.extend(BubblePanel.prototype, this.Delegator.prototype, methods);
+  this.extend(BubblePanel.prototype, this.DataDriven.prototype);
+  this.extend(BubblePanel.prototype, this.Delegator.prototype, methods);
 
 
   // export BubblePanel into the app namespace
   this.BubblePanel = BubblePanel;
 
-}.call(app)
+}.call(BubbleComparator)
