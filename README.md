@@ -1,7 +1,7 @@
 # Bubble Comparator
 
 A browser based bubble chart generator, designed to visualise and compare elements within a set of numerical values.
-A working demo is accessible here [here](http://afiore.github.com/bubble-comparator).
+A working demo is accessible [here](http://afiore.github.com/bubble-comparator).
 
 ## Requirements
 
