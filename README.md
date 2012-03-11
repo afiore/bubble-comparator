@@ -11,4 +11,4 @@ It requires a modern browser supporting EcmaScript 5 and capable of rendering SV
 ### Credits
 
 This project was initiated as part of the [Energy and Climate Hackday](http://www.meetup.com/OpenKnowledgeFoundation/London-GB/609192/), held in London on the 3rd of March 2012.
-Idea by Rufus Pollock, implementation by Andrea Fiore. Thanks to Ilias bartolini for hosting the gig and helping helping out debugging this.
+Idea by Rufus Pollock, implementation by Andrea Fiore. Many thanks to Ilias bartolini for hosting the event and helping me out debugging this.
