@@ -5,7 +5,7 @@
     options = options || {};
 
     _.defaults(options, {
-      width: 1000,
+      width: 500,
       height: 500,
       bubbleClass: 'bubble'
     });
@@ -17,13 +17,9 @@
     app.DataDriven.call(this);
     app.Delegator.call(this, element, options);
 
-    this.comparator = this.options.comparator;
-
     this.vis = d3.select(element).append("svg:svg")
       .attr("width", this.options.width)
       .attr("height", this.options.height)
-      .append("g")
-        .attr("transform", 'translate(-' + (this.options.width/3) + ')');
   }
 
   var methods = {};
@@ -109,10 +105,6 @@
         .attr("class", "node")
         .attr("cx", function (d) { return d.x; })
         .attr("cy", function (d) { return d.y; })
-        .attr("r",  function (d) { 
-          d.r = self.setters.radius(d.value); 
-          return d.r;
-        })
         .style("fill", function (d) {
           d.fill = self.setters.fill(d.value);
           return d.fill;
@@ -121,13 +113,18 @@
         .style("stroke-width", 1.5)
         .call(this.force.drag);
 
+
+    nodes.transition().duration(500).attr('r', function (d) { 
+      d.r = self.setters.radius(d.value); 
+      return d.r;
+    });
+
     nodes.exit()
       .transition()
       .duration(500)
       .attr('r', 0)
       .remove();
 
-    this.force.start();
     return this;
   }
 
@@ -140,34 +137,12 @@
     if (!this.force) this._setForce(); 
 
     this.refresh();
+
   }
-
-  //methods.removeNode = function (nodeName, refresh) {
-  //  refresh = !!refresh || false;
-
-  //  this.data = _.reject(this.data, function (d) { return d.name === nodeName; });
-  //  if (refresh) this.refresh();
-  //  return this;
-  //}
-
-  //methods.addNode = function (node, refresh) {
-  //  refresh = !!refresh || false;
-
-  //  // set node initial position if not specified
-  //  if ('x' in node === false) node.cx = 0;
-  //  if ('y' in node === false) node.cy = 0;
-
-
-  //  this.data.push(node);
-  //  if (refresh) this.refresh();
-  //  return this;
-  //}
-
 
   methods.onClick = function (event, d) {
     event.preventDefault();
     this.remove(d);
-    this.comparator.add(d);
   }
 
 

@@ -15,7 +15,9 @@
       bubbleClass: 'bubble'
     });
 
-    this.events = {};
+    this.events = {
+      'circle click': 'onClick'
+    };
 
     app.Delegator.call(this, element, options);
     app.DataDriven.call(this);
@@ -25,6 +27,11 @@
       .attr("height", this.options.height);
   }
 
+
+  methods.onClick = function (event, d) {
+    event.preventDefault();
+    this.remove(d);
+  };
 
   methods.refresh = function () {
     var self = this,
@@ -50,7 +57,12 @@
       .style("stroke", function(d, i) { return '#000'; })
       .style("stroke-width", 1.5);
 
-    nodes.exit().remove();
+
+    nodes.exit()
+      .transition()
+      .duration(500)
+      .attr('r', 0)
+      .remove();
 
     nodes.transition().duration(500)
       .attr('cx', function (d, i) {

@@ -9,11 +9,13 @@
       };
     });
 
-    var comparator = new app.ComparatorPanel(),
-        panel = new app.BubblePanel("#bubbles", {comparator: comparator});
+    var panel = new app.BubblePanel("#bubbles"),
+        comparator = new app.ComparatorPanel();
+
+    panel.on('data:remove', comparator.add.bind(comparator));
+    comparator.on('data:remove', panel.add.bind(panel));
 
     panel.render(records);
-    window.panel = panel;
   }
 
 

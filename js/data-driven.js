@@ -26,12 +26,14 @@
     withRefresh.call(this, function () {
       this.data.push(d);
     }, refresh);
+    this.emit('data:add', d);
   }
 
   DataDriven.prototype.remove = function (d, refresh) {
     withRefresh.call(this, function () {
       this.data = _.reject(this.data, this._identity(d));
     }, refresh);
+    this.emit('data:remove', d);
   }
 
   DataDriven.prototype.setIdentity = function (arg) {
@@ -41,6 +43,8 @@
       this.identityAttribute = arg;
     }
   }
+
+  _.extend(DataDriven.prototype, EventEmitter2.prototype);
 
   this.DataDriven = DataDriven;
 }.call(app);
